@@ -11,7 +11,8 @@ CORS(app)
 @app.route('/')
 @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
 def index():  
-    return "Hello"
+    return render_template("index.html")
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
