@@ -4,6 +4,7 @@
 Setup for your Flask app
 ```bash
 mkdir flask-vue-crud
+cd flask-vue-crud
 virtualenv -p python3.7 venv
 source venv/bin/activate
 pip install flask flask_cors
@@ -13,7 +14,6 @@ touch app.py .gitignore README.md
 Write in your `.gitignore` file
 ```
 venv/
-.vscode/ # This is for vscode
 .Idea/
 *.pyc
 ```
