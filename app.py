@@ -16,6 +16,12 @@ CORS(app)
 def index():  
     return render_template("index.html")
 
+  
+@app.route('/dashboard')
+@cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
+def dashboard():  
+    return render_template("crud_dashboard.html")
+
 
 @app.route('/dashboard_api', methods=['GET', 'POST', 'PUT', 'DELETE'])
 @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])

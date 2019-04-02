@@ -58,13 +58,13 @@ python app.py
 ```
 
 Make a `templates` directory parallel to your `app.py` file for your html files and then make an `index.html` file inside it
-```
+```bash
 mkdir templates
 touch templates/index.html
 ```
 
 Write in your index.html
-```
+```html
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -205,7 +205,7 @@ def dashboard_api():
 
     if request.method == 'GET':
 
-        # Get/Update
+        # Get
         redis_key = request.args.get("key")
         response = get_items(redis_key)
         result = response
@@ -230,4 +230,113 @@ def dashboard_api():
 ...
 ```
 
-## Vue Setup
+Here are some sample curls to try 
+```bash
+# GET
+curl http://0.0.0.0:5000/dashboard_api?key=000
+
+# POST
+curl -d '{"key": "0005", "randy": "val"}' -H "Content-Type: application/json" -X POST http://0.0.0.0:5000/dashboard_api
+
+# DELETE
+curl -d '{"key": "0005", "randy": "val"}' -H "Content-Type: application/json" -X DELETE http://0.0.0.0:5000/dashboard_api
+```
+
+## Creating your dashboard
+
+Make a `static` directory parallel to your `templates` file for your js and css files. For now we're only creating a js folder where we're going to create js file called `vueCrudDashboard.js`
+```bash
+mkdir static static/js
+touch static/js/vueCrudDashboard.js
+```
+
+Write in your `vueCrudDashboard.js` file
+```js
+const AppComponent = {
+    delimiters: ['[[', ']]'],  
+    template: `<div>
+                 <table class="table table-dark">
+                    <thead>
+                      <tr>
+                        <th>
+                          Key
+                        </th>
+                        <th>
+                          Details
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in tableItems">
+                        <td>
+                          [[ item.key ]]
+                        </td>
+                        <td>
+                          [[ item.details ]]
+                        </td>
+                      </tr>
+                    </tbody>
+                 </table>
+               </div>`,
+    data() {
+        return {
+            tableItems: []
+        }
+    },
+    created() {
+        // TODO: Turn this to a method
+        axios.get(`http://0.0.0.0:5000/dashboard_api?key=0`)
+        .then(response => {
+            this.tableItems = response.data
+        })
+        .catch(e => {
+            this.errors.push(e)
+        })
+    }
+};
+
+new Vue({  
+    el: '#app',
+    template:`
+    <div id="vue-application">
+        <app-component></app-component>
+    </div>
+    `
+       ,
+    components: {  
+        AppComponent,  
+    },  
+});
+```
+
+In your `templates` directory, create a new filed called `crud_dashboard.html`. Your Vue application will live here
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"  content="width=device-width,initial-scale=1.0">
+    <title>CRUD Dashboard</title>
+  </head>
+  <body>
+
+    <!-- This is your Vue application -->
+    <div id="app"></div>
+    <!-- End of Vue application -->
+
+    <script  type="module"  src="{{ url_for('static', filename='js/vueCrudDashboard.js') }}"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script  src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </body>
+</html>
+```
+
+In your `app.py` add a new route for your dashboard
+```python
+...
+@app.route('/dashboard')
+@cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
+def dashboard():  
+    return render_template("crud_dashboard.html")
+...
+```
