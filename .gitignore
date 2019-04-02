@@ -1,0 +1,4 @@
+venv/
+.vscode/ # This is mainly for vscode
+.Idea/
+*.pyc
