@@ -1,6 +1,6 @@
 # CRUD with Flask and Vue
 
-### Flask Setup
+## Flask Setup
 Setup for your Flask app
 ```bash
 mkdir flask-vue-crud
@@ -23,7 +23,8 @@ Write in your `app.py` file
 ```python
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS, cross_origin
-  
+import json
+
 app = Flask(__name__)
 cors = CORS(app, resources={r"/": {"origins": "localhost:5000"}})
 app.config['SECRET_KEY'] = 'all right then keep your secrets'
@@ -66,22 +67,22 @@ Write in your index.html
 ```
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport"  content="width=device-width,initial-scale=1.0">
-		<title>Index</title>
-	</head>
-	<body>
-        <h1>Hello</h1>
-	</body>
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport"  content="width=device-width,initial-scale=1.0">
+      <title>Index</title>
+  </head>
+  <body>
+      <h1>Hello</h1>
+  </body>
 </html>
 ```
 
-### Redis Setup
+## Redis Setup
 
 This guide assumes that your Redis is already set up but if not check out this tutorial by Digitial Ocean: https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-redis-on-ubuntu-16-04
 
-### Flask CRUD functions
+## Flask CRUD functions
 
 Make a file called `crud_funcs.py`. This is where we're going to put our database query functions
 
@@ -96,51 +97,25 @@ if __name__ == "__main__":
     pass
 ```
 
-Make a file called `utils.py` for your utility functions
+**These upcoming functions will be added in your `crud_funcs.py` file**
+
+Create/Update function
+> Set or update item in Redis. Argument passed should be a dictionary like so `{"key": "your-key", "details": "your-details"}`
 ```python
-def item_generator(num_of_items):
-
-    """ 
-    Generate a list of items for Redis insertion 
-
-    Args: 
-        num_of_items(int): number of items 
-        you want to make
-    """
-
-    generated_items = []
-
-    for i in range(0, num_of_items):
-
-        item_dict = {
-            "key": "000{}".format(i),
-            "details": "Item #{} Details".format(i),
-        }
-        generated_items.append(item_dict)
-
-    return generated_items
-```
-
-Create/Update
-```python
-def create_item(item_):
+...
+def create_item(item_dict):
 
     """
     Set/Update item in Redis
 
     Args: 
-        item_(dictionary): item 
+        item_dict(dictionary): item 
         to be put/updated in Redis
     """
     
     try:
-        item_dict = {
-            "key": item_["key"],
-            "details": item_["details"],
-        }
-
         json_dict = json.dumps(item_dict)
-        item_key = item_["key"]
+        item_key = item_dict["key"]
         r_server.set(item_key, json_dict)
         result = {"status": 1, "message": "Item Created", "item": item_dict}
 
@@ -149,22 +124,25 @@ def create_item(item_):
         result = {"status": 0, "message": "Error", "error": error}
 
     return result
+...
 ```
 
-Read
+Read function
+> Query redis using the redis_key argument supplied. Argument passed is a string like so `"0001"`
 ```python
-def get_items(redis_match):
+...
+def get_items(redis_key):
 
     """
     Get item(s) in Redis
 
     Args:
-        redis_match(str): string for 
+        redis_key(str): string for 
         scan match
     """
 
     cursor_ = 0
-    match_ = "{}*".format(redis_match)
+    match_ = "{}*".format(redis_key)
 
     try:
         
@@ -185,10 +163,13 @@ def get_items(redis_match):
         result = {"status": 0, "message": "Error", "error": error}
 
     return result
+...
 ```
 
-Delete
+Delete function
+> Delete item in Redis. Argument passed should be a dictionary like so `{"key": "your-key"}`
 ```python
+...
 def delete_item(item_):
 
     """ 
@@ -209,5 +190,44 @@ def delete_item(item_):
         result = {"status": 0, "message": "Error", "error": error}
 
     return result
+...
+```
+Back in your `app.py` file, import your crud functions and add a route for your api
+```python
+...
+from crud_funcs import create_item, delete_item, get_items
+...
+@app.route('/dashboard_api', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
+def dashboard_api():
+
+    result = None
+
+    if request.method == 'GET':
+
+        # Get/Update
+        redis_key = request.args.get("key")
+        response = get_items(redis_key)
+        result = response
+
+    elif request.method == 'POST' or request.method == 'PUT':
+
+        # Create/Update
+        item_ = request.data
+        json_item = json.loads(item_)
+        response = create_item(json_item)
+        result = response
+
+    elif request.method == 'DELETE':
+
+        # Delete
+        item_ = request.data
+        json_item = json.loads(item_)
+        response = delete_item(json_item)
+        result = response
+
+    return jsonify(result)
+...
 ```
 
+## Vue Setup

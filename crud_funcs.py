@@ -1,29 +1,24 @@
 from redis import Redis
 import json
-from utils import item_generator
+from utils import item_generator, func_iterator
 
 # Redis server
 r_server = Redis(host='localhost',port='6379', db='0')
 
 
-def create_item(item_):
+def create_item(item_dict):
 
     """
     Set/Update item in Redis
 
     Args: 
-        item_(dictionary): item 
+        item_dict(dictionary): item 
         to be put/updated in Redis
     """
     
     try:
-        item_dict = {
-            "key": item_["key"],
-            "details": item_["details"],
-        }
-
         json_dict = json.dumps(item_dict)
-        item_key = item_["key"]
+        item_key = item_dict["key"]
         r_server.set(item_key, json_dict)
         result = {"status": 1, "message": "Item Created", "item": item_dict}
 
@@ -58,19 +53,19 @@ def delete_item(item_):
     return result
 
 
-def get_items(redis_match):
+def get_items(redis_key):
 
     """
     Get item(s) in Redis
 
     Args:
-        redis_match(str): string for 
+        redis_key(str): string for 
         scan match
     """
 
     # TODO: Change this hardcoded cursor
     cursor_ = 0
-    match_ = "{}*".format(redis_match)
+    match_ = "{}*".format(redis_key)
 
     try:
         
@@ -94,38 +89,5 @@ def get_items(redis_match):
     return result
 
 
-def create_items(item_list):
-
-    """ 
-    Create multiple items in Redis
-
-    Args: 
-        item_list(list): list of items 
-    """
-
-    for item_ in item_list:
-        print(create_item(item_))
-    
-    return
-
-
-def delete_items(item_list):
-
-    """ 
-    Delete multiple items in Redis 
-
-    Args: 
-        item_list(list): list of items 
-    """
-
-    for item_ in item_list:
-        print(delete_item(item_))
-    
-    return
-
-
 if __name__ == "__main__":
-
-    item_list = item_generator(5)
-    # create_items(item_list)
-    print(get_items("0001"))
+    pass

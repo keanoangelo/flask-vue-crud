@@ -19,3 +19,21 @@ def item_generator(num_of_items):
         generated_items.append(item_dict)
 
     return generated_items
+
+
+def func_iterator(list_, func_):
+
+    """
+    Iterates a list and calls function
+    with list items
+
+    Args:
+        list_(list): list to iteratate
+        func_(func): function to call
+    """
+
+    for item in list_:
+        func_resp = func_(item)
+        print(func_resp)
+
+    return
