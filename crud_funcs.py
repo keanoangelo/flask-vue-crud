@@ -22,7 +22,6 @@ def create_item(item_dict):
         r_server.set(item_key, json_dict)
         result = {"status": 1, "message": "Item Created", "item": item_dict}
 
-    # TODO: Change this to more suitable catch
     except (Exception) as e:
         error = type(e)
         result = {"status": 0, "message": "Error", "error": error}
@@ -45,7 +44,6 @@ def delete_item(item_):
         r_server.delete(item_key)
         result = {"status": 1, "message": "Item Deleted", "item_key": item_key}
 
-    # TODO: Change this to more suitable catch
     except (Exception) as e:
         error = type(e)
         result = {"status": 0, "message": "Error", "error": error}
@@ -63,9 +61,12 @@ def get_items(redis_key):
         scan match
     """
 
-    # TODO: Change this hardcoded cursor
     cursor_ = 0
-    match_ = "{}*".format(redis_key)
+
+    if redis_key:
+        match_ = "{}*".format(redis_key)
+    else:
+        match_ = "*"
 
     try:
         

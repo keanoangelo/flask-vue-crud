@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_cors import CORS, cross_origin
 import json
 from crud_funcs import create_item, delete_item, get_items
@@ -13,8 +13,8 @@ CORS(app)
   
 @app.route('/')
 @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
-def index():  
-    return render_template("index.html")
+def dashboard_redirect():  
+    return redirect(url_for('dashboard'))
 
   
 @app.route('/dashboard')
