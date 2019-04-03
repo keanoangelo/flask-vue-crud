@@ -39,17 +39,15 @@ def dashboard_api():
     elif request.method == 'POST' or request.method == 'PUT':
 
         # Create/Update
-        item_ = request.data
-        json_item = json.loads(item_)
-        response = create_item(json_item)
+        item_dict = request.data
+        response = create_item(item_dict)
         result = response
 
     elif request.method == 'DELETE':
 
         # Delete
-        item_ = request.data
-        json_item = json.loads(item_)
-        response = delete_item(json_item)
+        item_dict = request.data
+        response = delete_item(item_dict)
         result = response
 
     return jsonify(result)
