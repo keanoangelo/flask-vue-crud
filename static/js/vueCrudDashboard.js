@@ -1,76 +1,95 @@
 const AppComponent = {
     delimiters: ['[[', ']]'],  
-    template: `<div class="table-responsive-md">
-    
-                    <table class="table table-dark">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Key
-                                </th>
-                                <th>
-                                    Details
-                                </th>
-                                <th>
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal">Add Item</button>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="item in tableItems">
-                                <td>
-                                    [[ item.key ]]
-                                </td>
-                                <td>
-                                    [[ item.details ]]
-                                </td>
-                                <td>
-                                    <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger btn-sm" @click="selectItem(item)" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- Add Modal -->
-                    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    <form>
-                                    <div class="form-group">
-                                        <label class="col-form-label">Key:</label>
-                                        <input type="text" class="form-control" v-model="addItem.key">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-form-label">Details:</label>
-                                        <input type="text" class="form-control" v-model="addItem.details">
-                                    </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal" @click="setItem">Add Item</button>
+    template: `<div class="container">
+                    
+                    <div class="row">
+                        <div class="col-6">
+                            <!-- Input Group -->
+                            <div class="input-group mb-3">
+                                <input type="text" v-model="matchString">
+                                <div class="input-group-prepend">
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal">Search</button>
                                 </div>
                             </div>
                         </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal">Add Item</button>
+                        </div>
                     </div>
+                    
 
-                    <!-- Delete Modal -->
-                    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalCenterTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-body">
-                                    Are you sure you want to delete [[ selectedItem ]]
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" @click="deleteItem(selectedItem)">Delete</button>
+                    <!-- Table -->
+                    <div class="table-responsive-md">
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Key
+                                    </th>
+                                    <th>
+                                        Details
+                                    </th>
+                                    <th>
+                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal">Add Item</button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in tableItems">
+                                    <td>
+                                        [[ item.key ]]
+                                    </td>
+                                    <td>
+                                        [[ item.details ]]
+                                    </td>
+                                    <td>
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-danger btn-sm" @click="selectItem(item)" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Add Modal -->
+                        <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <form>
+                                        <div class="form-group">
+                                            <label class="col-form-label">Key:</label>
+                                            <input type="text" class="form-control" v-model="addItem.key">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-form-label">Details:</label>
+                                            <input type="text" class="form-control" v-model="addItem.details">
+                                        </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal" @click="setItem">Add Item</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
+                        <!-- Delete Modal -->
+                        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        Are you sure you want to delete [[ selectedItem ]]
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" @click="deleteItem(selectedItem)">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                     </div>
                </div>`,
     data() {
         return {
@@ -78,6 +97,7 @@ const AppComponent = {
             apiURL: "http://0.0.0.0:5000/dashboard_api",
             selectedItem: null,
             addItem: {},
+            matchString: ""
         }
     },
     created() {
