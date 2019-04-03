@@ -1,6 +1,5 @@
 from redis import Redis
 import json
-from utils import item_generator, func_iterator
 
 # Redis server
 r_server = Redis(host='localhost',port='6379', db='0')
