@@ -1,7 +1,15 @@
 const AppComponent = {
     delimiters: ['[[', ']]'],  
     template: `<div class="container">
-                    
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="input-group mb-3">
+                                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal">Add Item</button>
+                            </div>
+                        </div>
+                    </div>                    
+
                     <div class="row">
                         <div class="col-6">
                             <!-- Input Group -->
@@ -12,12 +20,8 @@ const AppComponent = {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal">Add Item</button>
-                        </div>
                     </div>
                     
-
                     <!-- Table -->
                     <div class="table-responsive-md">
                         <table class="table table-dark">
