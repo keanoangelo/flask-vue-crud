@@ -8,7 +8,7 @@ const AppComponent = {
                             <div class="input-group mb-3">
                                 <input type="text" v-model="matchString">
                                 <div class="input-group-prepend">
-                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal">Search</button>
+                                    <button type="button" class="btn btn-primary btn-sm" @click="getItem">Search</button>
                                 </div>
                             </div>
                         </div>
@@ -30,7 +30,6 @@ const AppComponent = {
                                         Details
                                     </th>
                                     <th>
-                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addModal">Add Item</button>
                                     </th>
                                 </tr>
                             </thead>
@@ -79,7 +78,7 @@ const AppComponent = {
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-body">
-                                        Are you sure you want to delete [[ selectedItem ]]
+                                        Are you sure you want to delete Key: [[ selectedItem.key ]]
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
@@ -95,7 +94,7 @@ const AppComponent = {
         return {
             tableItems: [],
             apiURL: "http://0.0.0.0:5000/dashboard_api",
-            selectedItem: null,
+            selectedItem: {},
             addItem: {},
             matchString: ""
         }
@@ -108,6 +107,16 @@ const AppComponent = {
             axios.get(`http://0.0.0.0:5000/dashboard_api`)
             .then(response => {
                 this.tableItems = response.data
+            })
+            .catch(e => {
+                this.errors.push(e)
+            })
+        },
+        getItem: function() {
+            axios.get(`http://0.0.0.0:5000/dashboard_api?key=` + this.matchString)
+            .then(response => {
+                this.tableItems = response.data
+                this.matchString = ""
             })
             .catch(e => {
                 this.errors.push(e)
